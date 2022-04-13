@@ -369,10 +369,10 @@ contract MetaSkylines is Context, IERC20, Ownable {
     string private _name = "CroFundMe";
     string private _symbol = "CFM";
 //bool
-    bool public moveBnbToWallets = true;
+    bool public moveCroToWallets = true;
     bool public addLiq = true;
-    bool public swapBnbActive = true;
-    bool public TakeBnbForFees = true;
+    bool public swapCroActive = true;
+    bool public TakeCroForFees = true;
     bool public swapAndLiquifyEnabled = true;
     bool public blockMultiBuys = true;
     bool public marketActive = false;
@@ -461,7 +461,7 @@ contract MetaSkylines is Context, IERC20, Ownable {
         _rOwned[owner()] = _rTotal;
         emit Transfer(address(0), owner(), _tTotal);
     }
-    // accept bnb for autoswap
+    // accept cro for autoswap
     receive() external payable {
   	}
     function name() public view returns (string memory) {
@@ -479,8 +479,8 @@ contract MetaSkylines is Context, IERC20, Ownable {
     function totalSupply() public view override returns (uint256) {
         return _tTotal;
     }
-    function setMoveBnbToWallets(bool state) external onlyOwner {
-        moveBnbToWallets = state;
+    function setMoveCroToWallets(bool state) external onlyOwner {
+        moveCroToWallets = state;
     }
     function balanceOf(address account) public view override returns (uint256) {
         if (_isExcluded[account]) return _tOwned[account];
@@ -573,7 +573,7 @@ contract MetaSkylines is Context, IERC20, Ownable {
     }
     function setSwap(bool liq, bool swap) external onlyOwner {
         addLiq = liq;
-        swapBnbActive = swap;
+        swapCroActive = swap;
     }
     function setFees() private {
 		buyBusinessFee = buyMarketingFee + buyPoolCharityFee + buyDevelopmentFee;
@@ -771,7 +771,7 @@ contract MetaSkylines is Context, IERC20, Ownable {
         uint256 liq_part = contractTokenBalance * sellLiqFee / 100;
         uint256 initialBalance = address(this).balance;
         uint256 swaptokensamount = contractTokenBalance - liq_part;
-        if(swapBnbActive) {
+        if(swapCroActive) {
             swapTokensForEth(swaptokensamount);
         }
         uint256 newBalance = address(this).balance - initialBalance;
@@ -779,9 +779,9 @@ contract MetaSkylines is Context, IERC20, Ownable {
         if(addLiq) {
             addLiquidity(liq_part, liq_part_percent);
         }
-        uint256 remaningBnb = address(this).balance;
-        if(moveBnbToWallets) {
-            sendToWallet(remaningBnb);
+        uint256 remaningCro = address(this).balance;
+        if(moveCroToWallets) {
+            sendToWallet(remaningCro);
         }
     }
 // utility functions
@@ -888,7 +888,7 @@ contract MetaSkylines is Context, IERC20, Ownable {
             //sell
             else if(automatedMarketMakerPairs[to]) {
                 trade_type = 2;
-                // marketing auto-bnb
+                // marketing auto-cro
                 if (swapAndLiquifyEnabled && balanceOf(uniswapV2Pair) > 0 && overMinimumTokenBalance) {
                     swapAndLiquify(minimumTokensBeforeSwap);
                 }
