@@ -360,7 +360,7 @@ contract Ownable is Context {
         return block.timestamp;
     }
 }
-contract MetaSkylines is Context, IERC20, Ownable {
+contract CroFundMe is Context, IERC20, Ownable {
     using SafeMath for uint256;
     using Address for address;
 //custom
